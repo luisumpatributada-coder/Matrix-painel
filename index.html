@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>MATRIX PANEL</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:Arial,sans-serif;color:#fff}
+body{background:radial-gradient(circle at center,#250000 0%,#080000 42%,#000 80%)}
+#matrix{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.28}
+.glow{position:fixed;width:300px;height:300px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#f00;filter:blur(130px);opacity:.07;z-index:1;pointer-events:none}
+.tabs{position:fixed;left:7px;top:50%;transform:translateY(-50%);z-index:30;display:flex;flex-direction:column;gap:12px}
+.tab{width:43px;height:43px;border-radius:50%;border:2px solid #444;background:#070707;color:#777;font:bold 17px Arial}
+.tab.active{color:#fff;border-color:#f00;background:radial-gradient(circle,#ff3333,#a00000 55%,#250000);box-shadow:0 0 10px #f00,0 0 22px #800}
+.page{position:absolute;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;padding:10px 10px 10px 58px}
+.hidden{display:none!important}
+.panel{width:min(86vw,390px);background:linear-gradient(145deg,rgba(18,18,20,.98),rgba(3,3,4,.98));border:1px solid #e00000;border-radius:16px;box-shadow:0 0 9px #f00,0 0 28px #400,inset 0 0 35px rgba(255,0,0,.05);padding:13px;max-height:90vh}
+.header{height:64px;display:flex;align-items:center;padding:9px;border:1px solid #b00000;border-radius:12px;background:linear-gradient(135deg,#190000,#070707 65%,#130000);margin-bottom:7px}
+.crown{font-size:27px;color:#f00;margin-right:9px;text-shadow:0 0 12px #f00}
+.brand h1{font-size:22px;font-weight:900;font-style:italic;color:#fff;text-shadow:2px 2px #800,0 0 10px #f00}
+.brand span{display:block;color:#f22;font-size:8px;font-weight:bold;letter-spacing:3px}
+.card{min-height:51px;display:flex;align-items:center;margin-top:6px;padding:7px;border:1px solid #650000;border-radius:11px;background:linear-gradient(100deg,#190000,#080808)}
+.icon{width:34px;height:34px;min-width:34px;display:flex;align-items:center;justify-content:center;border-radius:9px;color:#f00;font-size:18px;border:1px solid #900;background:#080000}
+.info{flex:1;padding-left:8px}.info b{display:block;color:#eee;font-size:12px}.info small{display:block;margin-top:2px;color:#777;font-size:8px}
+.toggle{width:54px;height:28px;position:relative;border:2px solid #444;border-radius:30px;background:#080808}
+.dot{position:absolute;width:20px;height:20px;left:3px;top:2px;border-radius:50%;background:#555;transition:.2s}
+.toggle.on{border-color:#f00;background:#350000;box-shadow:0 0 9px #700}
+.toggle.on .dot{left:28px;background:#fff;box-shadow:0 0 10px #f00}
+.fpsBtn{width:100%;height:40px;margin-top:10px;border:2px solid #f00;border-radius:30px;background:linear-gradient(90deg,#400000,#e00000,#400000);color:#fff;font-size:13px;font-weight:bold;box-shadow:0 0 12px #800}
+.fpsBtn:active{transform:scale(.97)}
+.speedControl{margin-top:10px;padding:10px;border:1px solid #700;border-radius:10px;background:#0c0000}
+.speedLabel{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.speedLabel b{color:#f00;font-size:11px}.speedValue{color:#fff;font-weight:bold;font-size:13px}
+.speedHint{font-size:8px;color:#666;margin-bottom:6px}
+.slider{width:100%;height:6px;-webkit-appearance:none;appearance:none;background:#111;border-radius:3px;outline:none}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#f00;cursor:pointer;box-shadow:0 0 8px #f00}
+.footer{margin-top:10px;color:#555;text-align:center;font-size:7px;letter-spacing:2px}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas><div class="glow"></div>
+
+<div class="tabs">
+<button class="tab active" id="tab1" onclick="showPage(1)">1</button>
+<button class="tab" id="tab2" onclick="showPage(2)">2</button>
+</div>
+
+<div class="page" id="page1"><div class="panel">
+<div class="header"><div class="crown">♛</div><div class="brand"><h1>MATRIX PANEL</h1><span>FREE FIRE</span></div></div>
+
+<div class="card"><div class="icon">🎯</div><div class="info"><b>ESTABILIZAR MIRA</b><small>Controle suave da mira</small></div><div class="toggle" onclick="this.classList.toggle('on')"><div class="dot"></div></div></div>
+<div class="card"><div class="icon">2x</div><div class="info"><b>ESTABILIZAR 2X</b><small>Para mira 2x</small></div><div class="toggle" onclick="this.classList.toggle('on')"><div class="dot"></div></div></div>
+<div class="card"><div class="icon">4x</div><div class="info"><b>ESTABILIZAR 4X</b><small>Para mira 4x</small></div><div class="toggle" onclick="this.classList.toggle('on')"><div class="dot"></div></div></div>
+<div class="card"><div class="icon">📉</div><div class="info"><b>TIRAR RECUO</b><small>Reduz recuo da arma</small></div><div class="toggle" onclick="this.classList.toggle('on')"><div class="dot"></div></div></div>
+
+<button class="fpsBtn" id="fpsBtn" onclick="ativarFPS()">⚡ ATIVAR 120 FPS</button>
+<div class="footer">MATRIX PANEL</div>
+</div></div>
+
+<div class="page hidden" id="page2"><div class="panel">
+<div class="header"><div class="crown">♛</div><div class="brand"><h1>MATRIX PANEL</h1><span>FREE FIRE</span></div></div>
+<div class="card"><div class="icon">🏃</div><div class="info"><b>BONECO LENTO</b><small>Inimigos em movimento reduzido</small></div><div class="toggle" onclick="this.classList.toggle('on')"><div class="dot"></div></div></div>
+<div class="speedControl"><div class="speedLabel"><b>⏱️ VELOCIDADE DO INIMIGO</b><span class="speedValue" id="speedVal">60%</span></div><div class="speedHint">Quanto menor, mais lento o inimigo fica</div><input type="range" class="slider" min="20" max="100" value="60" oninput="document.getElementById('speedVal').innerText=this.value+'%'"></div>
+<div class="footer">MATRIX PANEL</div>
+</div></div>
+
+<script>
+let fpsAtivo=false;
+function ativarFPS(){
+ const btn=document.getElementById("fpsBtn"); fpsAtivo=!fpsAtivo;
+ if(fpsAtivo){btn.innerText="✓ 120 FPS ATIVADO";btn.style.background="linear-gradient(90deg,#004400,#00aa00,#004400)";btn.style.borderColor="#0f0"}
+ else{btn.innerText="⚡ ATIVAR 120 FPS";btn.style.background="linear-gradient(90deg,#400000,#e00000,#400000)";btn.style.borderColor="#f00"}
+}
+function showPage(n){
+ document.getElementById("page1").classList.toggle("hidden",n!==1);
+ document.getElementById("page2").classList.toggle("hidden",n===1);
+ document.getElementById("tab1").classList.toggle("active",n===1);
+ document.getElementById("tab2").classList.toggle("active",n!==1);
+}
+const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");
+let w,h,drops=[];const fs=16;
+function resize(){
+ const dpr=window.devicePixelRatio||1;w=innerWidth;h=innerHeight;
+ canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+"px";canvas.style.height=h+"px";
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ drops=Array.from({length:Math.ceil(w/fs)},()=>Math.random()*-60);
+}
+function draw(){
+ ctx.fillStyle="rgba(0,0,0,.14)";ctx.fillRect(0,0,w,h);ctx.font=fs+"px monospace";
+ for(let i=0;i<drops.length;i++){
+  const y=drops[i]*fs;ctx.fillStyle="#d40000";ctx.shadowColor="#f00";ctx.shadowBlur=6;
+  ctx.fillText(Math.random()>.5?"0":"1",i*fs,y);ctx.shadowBlur=0;drops[i]+=1.15;
+  if(y>h)drops[i]=Math.random()*-25;
+ }
+ requestAnimationFrame(draw);
+}
+addEventListener("resize",resize);resize();draw();
+</script>
+</body>
+</html>
